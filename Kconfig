@@ -1,6 +1,160 @@
-config 88XXAU
-	tristate "Realtek 88XXau USB WiFi"
-	depends on USB
-	---help---
-	  Help message of 88XXau
+mainmenu "Wi-Fi Realtek Driver Configuration"
 
+choice
+	prompt "Chipset"
+	default CONFIG_RTL8812A
+	help
+		Choose chipset, installed in your adapter.
+
+config CONFIG_RTL8812A
+	bool "RTL8812A"
+
+config CONFIG_RTL8814A
+	bool "RTL8814A"
+
+config CONFIG_RTL8821A
+	bool "RTL8821A"
+
+endchoice # "Chipset"
+
+
+menu "Power consumption"
+
+config CONFIG_POWER_SAVING
+	bool "Power saving mode"
+	default false
+	help
+		Enable power saving mode for dongle.
+
+config CONFIG_USB2_EXTERNAL_POWER
+	bool "USB 2.0 consumption limitatition"
+	default false
+	help
+		False means that port support supply current over 500mA,
+		so no limitation in Power by Rate.
+
+config CONFIG_USB_AUTOSUSPEND
+	bool "Enable USB autosuspend"
+	default false
+	help
+		This feature enable USB autosuspend while dongle is idle.
+
+config CONFIG_HW_PWRP_DETECTION
+	bool "Enable hardware power pin detection"
+	default false
+	help
+		Enable power down function via power pin.
+
+endmenu # "Power consumption"
+
+menu "Features"
+
+
+config CONFIG_BT_COEXIST
+	bool "Bluetotooth co-exist"
+	depends on CONFIG_RTL8723B
+	default false
+	help
+		Enable Wi-Fi and Bluetooth co-existing.
+
+config CONFIG_TDLS
+	bool "Tunneled Direct Link Setup"
+	default false
+	help
+		Enable TDLS - way to stream data faster between
+		devices on the same network.
+
+config CONFIG_EFUSE_CONFIG_FILE
+	bool "Use eFuse external file"
+	default true
+	help
+		eFuse is a technology invented by IBM which allows for the
+		dynamic real-time reprogramming of computer chips.
+
+config CONFIG_80211W
+	bool "Enable 802.11w standard support"
+	default true
+	help
+		IEEE 802.11w is the Protected Management Frames standard for
+		the IEEE 802.11 family of standards. TGw is working on improving
+		the IEEE 802.11 Medium Access Control layer. The objective of this
+		is to increase the security by providing data confidentiality of
+		management frames, mechanisms that enable data integrity, data
+		origin authenticity, and replay protection.
+
+config CONFIG_NET_NS
+	bool "Network namespace support"
+	default true
+	help
+		Allow user space to create what appear to be multiple instances of
+		the network stack.
+
+config CONFIG_BR_EXT
+	bool "External network bridge"
+	depends on CONFIG_NET_NS
+	default true
+	help
+		Enable creating of external network bridge.
+
+config CONFIG_ENABLE_DRIVER_WARNINGS
+	bool "Enable driver debug warnings"
+	default false
+	help
+		This feature enable driver debug warning. That is useful for
+		informing developer about some unexpected but not critical
+		situations in driver runtime.
+
+config CONFIG_IOCTL_CFG80211
+	bool "Linux cfg80211 interface ioctl's support"
+	default true
+
+config CONFIG_RTW_USE_CFG80211_STA_EVENT
+	bool "Support of cfg80211 STA events"
+	depends on CONFIG_IOCTL_CFG80211
+	default false
+	help
+		This config is used for driver to indicate new cfg80211 STA
+		event, which is required  by wpa_supplicant_8. Linux kernel
+		supports this feature after kernel 3.2.
+
+config CONFIG_RADIO_WORK
+	bool "Enable 'radio work' wpa_supplicant mechanism"
+	default false
+
+config CONFIG_CONCURRENT_MODE
+	bool "Enable driver concurrent mode"
+	default false
+	help
+		This config enables driver concurrent mode, that is needed for
+		dual STA + P2P mode.
+
+config CONFIG_TXPWR_LIMIT
+	bool "Transmission power limitation"
+	default false
+	help
+		Helps to avoid country power transmition restrictions. Can be configured here or
+		by bootargs parameter rtw_tx_pwr_lmt_enable (0:Disable, 1:Enable,
+		2: Depend on efuse(should be turn on manually)).
+
+config CONFIG_TXPWR_LIMIT_EN
+	depends on CONFIG_TXPWR_LIMIT
+	bool "Enable tx power limitation"
+	default false
+
+config CONFIG_TXPWR_BY_RATE
+	bool "Transmission power dependent from rate"
+	default false
+
+config CONFIG_TXPWR_BY_RATE_EN
+	depends on CONFIG_TXPWR_BY_RATE
+	bool "Configure transmission power dependent from rate"
+	default false
+	help
+		Can be configured here or by bootargs parameter rtw_tx_pwr_by_rate
+		(0:Disable, 1:Enable, 2: Depend on efuse (should be turn on manually)).
+
+config CONFIG_RTW_IOCTL_SET_COUNTRY
+	bool "RTW_IOCTL_SET_COUNTRY support"
+	default false
+
+endmenu # "Features"
